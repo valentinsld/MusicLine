@@ -1,0 +1,13 @@
+extends layout
+
+block content
+  h1 new experiment
+  form(method="post", action="/experiment",enctype="multipart/form-data")
+    div
+      label title
+        input(type="text",name="title")
+    div
+      label experiment
+        input(type="file",name="experiment")
+    div
+      input(type="submit",value="save")

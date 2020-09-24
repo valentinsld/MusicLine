@@ -1,0 +1,9 @@
+extends layout
+
+block content
+  a(href="/") back
+  h1= title
+  .date= createdAt
+  .file= file
+  img(src=`/uploads/${file}`)
+  audio(src=`/uploads/${file}`,controls="true")
