@@ -2,7 +2,7 @@
 
  Create music by drawing lines 
 
- ** Demo : **
+ **Demo :**
 http://www.music-line.valentinsld.fr/
 
 ![alt text](http://www.music-line.valentinsld.fr/demo.png)
