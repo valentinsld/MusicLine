@@ -11,7 +11,7 @@ let cursor = {
   hold: false,
   holdBall: false,
 }
-const debug = true
+const debug = false
 
 //     Init Synth
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -77,7 +77,7 @@ function sinusReduce(x) {
 function playSound(note) {
   var piano = Synth.createInstrument('piano')
   piano.play(note.letter, note.number, 2) // plays C4 for 2s using the 'piano' sound profile
-}
+} 
 
 //     Circle
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -146,10 +146,15 @@ function line(x1, y1, x2, y2) {
   this.cx2 = 0
   this.cy2 = 0
 
-  this.vx1 = 100
-  this.vy1 = 0
-  this.vx2 = 100
-  this.vy2 = 0
+  this.xx1 = this.x1 + (this.x2 - this.x1)*0.1
+  this.yy1 = this.y1 + (this.y2 - this.y1)*0.1
+  this.xx2 = this.x2 + (this.x1 - this.x2)*0.1
+  this.yy2 = this.y2 + (this.y1 - this.y2)*0.1
+
+  this.vx1 = (-.1*(this.y2 - this.y1))
+  this.vy1 = (.1*(this.x2 - this.x1))
+  this.vx2 = (.1*(this.y1 - this.y2))
+  this.vy2 = (-.1*(this.x1 - this.x2))
 
   this.ballx = 0
   this.bally = 0
@@ -164,10 +169,10 @@ function line(x1, y1, x2, y2) {
     ctx.beginPath()
     ctx.moveTo(this.x1, this.y1)
     ctx.bezierCurveTo(
-      this.x1 + this.cx1,
-      this.y1 + this.cy1,
-      this.x2 + this.cx2,
-      this.y2 + this.cy2,
+      this.xx1 + this.cx1,
+      this.yy1 + this.cy1,
+      this.xx2 + this.cx2,
+      this.yy2 + this.cy2,
       this.x2,
       this.y2,
     )
@@ -178,15 +183,21 @@ function line(x1, y1, x2, y2) {
 
     if (debug) {
       ctx.beginPath()
-      ctx.arc(this.x1 + this.cx1, this.y1 + this.cy1, 3, 0, Math.PI * 2, false)
-      ctx.arc(this.x2 + this.cx2, this.y2 + this.cy2, 3, 0, Math.PI * 2, false)
+      ctx.arc(this.xx1 + this.cx1, this.yy1 + this.cy1, 3, 0, Math.PI * 2, false)
+      ctx.arc(this.xx2 + this.cx2, this.yy2 + this.cy2, 3, 0, Math.PI * 2, false)
       ctx.fillStyle = 'red'
       ctx.fill()
 
       ctx.beginPath()
-      ctx.arc(this.x1 + this.cx1, this.y1 + this.cy1, 3, 0, Math.PI * 2, false)
-      ctx.arc(this.x2 + this.cx2, this.y2 + this.cy2, 3, 0, Math.PI * 2, false)
-      ctx.fillStyle = 'red'
+      ctx.arc(this.xx1, this.yy1, 3, 0, Math.PI * 2, false)
+      ctx.arc(this.xx2, this.yy2, 3, 0, Math.PI * 2, false)
+      ctx.fillStyle = 'green'
+      ctx.fill()
+
+      ctx.beginPath()
+      ctx.arc(this.xx1 + this.vx1, this.yy1 + this.vy1, 3, 0, Math.PI * 2, false)
+      ctx.arc(this.xx2 + this.vx2, this.yy2 + this.vy2, 3, 0, Math.PI * 2, false)
+      ctx.fillStyle = 'yellow'
       ctx.fill()
     }
   }
@@ -224,8 +235,13 @@ function line(x1, y1, x2, y2) {
     if (this.anim) {
       const tt = sinusReduce(this.time)
 
-      this.cx1 = 100 * tt
-      this.cx2 = 100 * tt
+      this.cx1 = this.vx1 * tt
+      this.cy1 = this.vy1 * tt
+      this.cx2 = this.vx2 * tt
+      this.cy2 = this.vy2 * tt
+
+      // this.cx1 = 100 * tt
+      // this.cx2 = 100 * tt
 
       this.time += 0.03
 
